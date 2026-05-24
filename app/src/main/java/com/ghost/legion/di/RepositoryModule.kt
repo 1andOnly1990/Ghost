@@ -6,6 +6,8 @@ import com.ghost.legion.data.repository.WorldRepositoryImpl
 import com.ghost.legion.domain.repository.GameStateRepository
 import com.ghost.legion.domain.repository.NarrativeRepository
 import com.ghost.legion.domain.repository.WorldRepository
+import com.ghost.legion.domain.repository.SettingsRepository
+import com.ghost.legion.data.repository.SettingsRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -33,4 +35,10 @@ abstract class RepositoryModule {
     abstract fun bindWorldRepository(
         impl: WorldRepositoryImpl
     ): WorldRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindSettingsRepository(
+        impl: SettingsRepositoryImpl
+    ): SettingsRepository
 }

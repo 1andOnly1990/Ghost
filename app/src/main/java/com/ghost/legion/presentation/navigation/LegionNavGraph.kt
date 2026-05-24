@@ -21,9 +21,7 @@ sealed class LegionRoute(val route: String) {
 
 @Composable
 fun LegionNavGraph(
-    navController: NavHostController,
-    apiKey: String,
-    onSaveApiKey: (String) -> Unit
+    navController: NavHostController
 ) {
     NavHost(
         navController = navController,
@@ -51,9 +49,9 @@ fun LegionNavGraph(
         }
 
         composable(LegionRoute.Settings.route) {
+            val viewModel: com.ghost.legion.presentation.screen.settings.SettingsViewModel = hiltViewModel()
             SettingsScreen(
-                currentApiKey = apiKey,
-                onSaveApiKey = onSaveApiKey,
+                viewModel = viewModel,
                 onNavigateBack = { navController.popBackStack() }
             )
         }

@@ -15,10 +15,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.compose.rememberNavController
 import com.ghost.legion.data.remote.GeminiClient
 import com.ghost.legion.presentation.navigation.LegionNavGraph
@@ -30,14 +26,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private val Context.dataStore by preferencesDataStore(name = "legion_settings")
-private val API_KEY_PREF = stringPreferencesKey("gemini_api_key")
+import com.ghost.legion.domain.repository.SettingsRepository
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var geminiClient: GeminiClient
+
+    @Inject
+    lateinit var settingsRepository: SettingsRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,14 +48,17 @@ class MainActivity : ComponentActivity() {
 
             // Load saved API key
             LaunchedEffect(Unit) {
-                val savedKey = dataStore.data.map { prefs ->
-                    prefs[API_KEY_PREF] ?: ""
-                }.first()
-
-                apiKey = savedKey
-                if (savedKey.isNotBlank()) {
-                    geminiClient.initialize(savedKey)
-                } else {
+                settingsRepository.settings.collect { settings ->
+                    if (settings.apiKey.isNotBlank()) {
+                        geminiClient.initialize(settings.apiKey)
+                    }
+                }
+            }
+            
+            // Initial navigation logic
+            LaunchedEffect(Unit) {
+                val settings = settingsRepository.settings.first()
+                if (settings.apiKey.isBlank()) {
                     navController.navigate(LegionRoute.Settings.route) {
                         popUpTo(LegionRoute.Terminal.route) { inclusive = false }
                     }
@@ -71,17 +72,7 @@ class MainActivity : ComponentActivity() {
                         .background(MaterialTheme.colorScheme.background)
                 ) {
                     LegionNavGraph(
-                        navController = navController,
-                        apiKey = apiKey,
-                        onSaveApiKey = { newKey ->
-                            apiKey = newKey
-                            geminiClient.initialize(newKey)
-                            scope.launch {
-                                dataStore.edit { prefs ->
-                                    prefs[API_KEY_PREF] = newKey
-                                }
-                            }
-                        }
+                        navController = navController
                     )
                 }
             }

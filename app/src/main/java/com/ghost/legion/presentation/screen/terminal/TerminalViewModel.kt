@@ -12,6 +12,7 @@ import com.ghost.legion.domain.usecase.SendMessageUseCase
 import com.ghost.legion.domain.repository.NarrativeRepository
 import com.ghost.legion.domain.repository.GameStateRepository
 import com.ghost.legion.domain.repository.WorldRepository
+import com.ghost.legion.domain.repository.SettingsRepository
 import com.ghost.legion.domain.model.VisualState
 import com.ghost.legion.presentation.util.TtsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -44,11 +45,18 @@ class TerminalViewModel @Inject constructor(
     private val narrativeRepository: NarrativeRepository,
     private val gameStateRepository: GameStateRepository,
     private val worldRepository: WorldRepository,
-    private val ttsManager: TtsManager
+    private val ttsManager: TtsManager,
+    settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TerminalUiState())
     val uiState: StateFlow<TerminalUiState> = _uiState.asStateFlow()
+
+    val settings = settingsRepository.settings.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = com.ghost.legion.domain.model.AppSettings()
+    )
 
     init {
         viewModelScope.launch {

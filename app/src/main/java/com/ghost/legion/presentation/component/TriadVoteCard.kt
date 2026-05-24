@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -39,7 +40,7 @@ fun ChoiceCard(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            text = "CHOOSE YOUR PATH",
+            text = "// CHOOSE YOUR PATH //",
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold
@@ -64,13 +65,13 @@ fun TriadVoteCard(
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 8.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.9f)
+            containerColor = androidx.compose.ui.graphics.Color.Black
         ),
         border = BorderStroke(
-            width = 1.dp,
-            color = DevonColors.primary.copy(alpha = 0.4f)
+            width = 2.dp,
+            color = DevonColors.primary
         ),
-        shape = RoundedCornerShape(12.dp)
+        shape = RectangleShape
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -128,8 +129,11 @@ private fun VotePositionButton(
     OutlinedButton(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
-        border = BorderStroke(1.dp, color.copy(alpha = 0.5f))
+        shape = RectangleShape,
+        border = BorderStroke(2.dp, color),
+        colors = androidx.compose.material3.ButtonDefaults.outlinedButtonColors(
+            containerColor = androidx.compose.ui.graphics.Color.Black
+        )
     ) {
         Column(
             modifier = Modifier
@@ -143,9 +147,9 @@ private fun VotePositionButton(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = position,
+                text = "> $position",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onBackground
+                color = color
             )
         }
     }

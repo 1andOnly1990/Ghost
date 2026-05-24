@@ -68,7 +68,7 @@ class NarrativeRepositoryImpl @Inject constructor(
             )
         } ?: com.ghost.legion.domain.model.GameState()
 
-        val factions = worldBoardDao.getAllFactions().first().map { it.toDomainFaction() }
+        val factions = worldBoardDao.getWorldBoardOnce()?.factions ?: emptyList()
         val chatHistory = chatLogDao.getAllMessages(sessionId).first().map { it.toDomain() }
 
         // Generate response
@@ -131,15 +131,4 @@ class NarrativeRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun com.ghost.legion.data.local.entity.WorldBoardEntity.toDomainFaction(): Faction {
-        return Faction(
-            id = factionId,
-            name = factionName,
-            influence = influence,
-            hostilityToPlayer = hostilityToPlayer,
-            currentAgenda = currentAgenda,
-            lastTickTimestamp = lastTickTimestamp,
-            isActive = isActive
-        )
-    }
 }

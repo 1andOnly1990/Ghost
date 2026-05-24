@@ -74,6 +74,7 @@ fun TerminalScreen(
     onNavigateToSettings: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val settings by viewModel.settings.collectAsState()
     var inputText by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
 
@@ -91,7 +92,12 @@ fun TerminalScreen(
         }
     }
 
-    LegionTheme(activeEntity = uiState.activeEntity) {
+    LegionTheme(
+        activeEntity = if (settings.themeOverride == com.ghost.legion.domain.model.ThemeOverride.DYNAMIC) 
+            uiState.activeEntity 
+        else 
+            NarrativeEntity.DEVON // Or map ThemeOverride to an entity if needed
+    ) {
         val bgColor by animateColorAsState(
             targetValue = MaterialTheme.colorScheme.background,
             animationSpec = tween(800),
@@ -176,7 +182,8 @@ fun TerminalScreen(
                             )
                             ChatBubble(
                                 message = welcomeMsg,
-                                visualState = com.ghost.legion.domain.model.VisualState.BASELINE
+                                visualState = com.ghost.legion.domain.model.VisualState.BASELINE,
+                                speed = settings.textSpeed
                             )
                         }
                     }
@@ -187,7 +194,8 @@ fun TerminalScreen(
                     ) { message ->
                         ChatBubble(
                             message = message,
-                            visualState = message.uiData?.visualState ?: com.ghost.legion.domain.model.VisualState.BASELINE
+                            visualState = message.uiData?.visualState ?: com.ghost.legion.domain.model.VisualState.BASELINE,
+                            speed = settings.textSpeed
                         )
                     }
 
@@ -338,8 +346,10 @@ fun TerminalScreen(
             }
 
             // Overlays
-            ScanlineOverlay()
-            VignetteOverlay()
+            if (settings.crtEffectsEnabled) {
+                ScanlineOverlay()
+                VignetteOverlay()
+            }
 
             // Error snackbar
             AnimatedVisibility(

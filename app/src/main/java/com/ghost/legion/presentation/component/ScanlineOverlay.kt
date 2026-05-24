@@ -31,15 +31,40 @@ fun ScanlineOverlay(
         label = "scanline_offset"
     )
 
+    val flicker by infiniteTransition.animateFloat(
+        initialValue = 0.8f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 100, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "flicker"
+    )
+
     Canvas(modifier = modifier.fillMaxSize()) {
         val height = size.height
         val width = size.width
         var y = offset
         while (y < height) {
+            // Main Scanline
             drawLine(
-                color = color,
+                color = color.copy(alpha = color.alpha * flicker),
                 start = Offset(0f, y),
                 end = Offset(width, y),
+                strokeWidth = 2f
+            )
+            // Chromatic aberration (Subtle red shift)
+            drawLine(
+                color = Color.Red.copy(alpha = 0.05f * flicker),
+                start = Offset(0f, y - 1f),
+                end = Offset(width, y - 1f),
+                strokeWidth = 1f
+            )
+            // Chromatic aberration (Subtle blue shift)
+            drawLine(
+                color = Color.Blue.copy(alpha = 0.05f * flicker),
+                start = Offset(0f, y + 1f),
+                end = Offset(width, y + 1f),
                 strokeWidth = 1f
             )
             y += lineSpacing

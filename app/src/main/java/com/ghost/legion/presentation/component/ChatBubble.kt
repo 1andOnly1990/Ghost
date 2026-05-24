@@ -14,6 +14,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -22,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.ghost.legion.domain.model.ChatMessage
 import com.ghost.legion.domain.model.NarrativeChoice
 import com.ghost.legion.domain.model.VisualState
+import com.ghost.legion.domain.model.TextSpeed
 import com.ghost.legion.presentation.theme.EntityColors
 import com.ghost.legion.presentation.theme.EntityFonts
 
@@ -29,6 +33,7 @@ import com.ghost.legion.presentation.theme.EntityFonts
 fun ChatBubble(
     message: ChatMessage,
     visualState: VisualState,
+    speed: TextSpeed = TextSpeed.NORMAL,
     modifier: Modifier = Modifier
 ) {
     if (message.isPlayerMessage) {
@@ -39,14 +44,15 @@ fun ChatBubble(
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.85f)
-                    .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 2.dp, bottomStart = 12.dp, bottomEnd = 12.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .background(Color.Black)
+                    .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
                     .padding(12.dp)
             ) {
-                Text(
-                    text = message.text,
+                TypewriterText(
+                    fullText = message.text,
                     style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = MaterialTheme.colorScheme.primary,
+                    speed = speed
                 )
             }
         }
@@ -54,27 +60,27 @@ fun ChatBubble(
     }
 
     when (visualState) {
-        VisualState.AURA_OVERRIDE -> AuraBubble(message, modifier)
-        VisualState.ECHO_OVERRIDE -> EchoBubble(message, modifier)
-        VisualState.DEVON_KINESIC -> DevonKinesicBubble(message, modifier)
-        VisualState.DEVON_TUNNEL -> DevonTunnelBubble(message, modifier)
-        VisualState.DEVON_MARGINALIA -> DevonMarginaliaBubble(message, modifier)
-        VisualState.LEGION_GESTALT -> LegionBubble(message, modifier)
-        VisualState.BASELINE -> BaselineBubble(message, modifier)
+        VisualState.AURA_OVERRIDE -> AuraBubble(message, speed, modifier)
+        VisualState.ECHO_OVERRIDE -> EchoBubble(message, speed, modifier)
+        VisualState.DEVON_KINESIC -> DevonKinesicBubble(message, speed, modifier)
+        VisualState.DEVON_TUNNEL -> DevonTunnelBubble(message, speed, modifier)
+        VisualState.DEVON_MARGINALIA -> DevonMarginaliaBubble(message, speed, modifier)
+        VisualState.LEGION_GESTALT -> LegionBubble(message, speed, modifier)
+        VisualState.BASELINE -> BaselineBubble(message, speed, modifier)
     }
 }
 
 @Composable
-fun AuraBubble(message: ChatMessage, modifier: Modifier = Modifier) {
+fun AuraBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .border(
-                width = 1.dp,
+                width = 2.dp,
                 color = EntityColors.AuraBorder,
-                shape = RoundedCornerShape(2.dp)
+                shape = RectangleShape
             )
-            .background(EntityColors.AuraBackground)
+            .background(Color.Black)
             .padding(12.dp)
     ) {
         Column {
@@ -99,19 +105,22 @@ fun AuraBubble(message: ChatMessage, modifier: Modifier = Modifier) {
             Spacer(Modifier.height(8.dp))
             HorizontalDivider(color = EntityColors.AuraBorder, thickness = 0.5.dp)
             Spacer(Modifier.height(8.dp))
-            Text(
-                text = message.text,
+            TypewriterText(
+                fullText = message.text,
                 color = EntityColors.AuraDataText,
-                fontSize = 13.sp,
-                fontFamily = FontFamily.Monospace,
-                lineHeight = 20.sp
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontFamily = FontFamily.Monospace,
+                    lineHeight = 20.sp
+                ),
+                speed = speed
             )
         }
     }
 }
 
 @Composable
-fun EchoBubble(message: ChatMessage, modifier: Modifier = Modifier) {
+fun EchoBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modifier) {
     val infiniteTransition = rememberInfiniteTransition(label = "echo_pulse")
     val alpha by infiniteTransition.animateFloat(
         initialValue = 0.6f,
@@ -126,40 +135,35 @@ fun EchoBubble(message: ChatMessage, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .background(
-                Brush.radialGradient(
-                    colors = listOf(
-                        EntityColors.EchoAccent.copy(alpha = 0.3f * alpha),
-                        EntityColors.EchoBackground
-                    )
-                )
-            )
+            .background(Color.Black)
             .border(
-                width = 1.dp,
+                width = 2.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
                         EntityColors.EchoPrimary.copy(alpha = alpha),
-                        EntityColors.EchoAccent.copy(alpha = 0.3f)
+                        EntityColors.EchoAccent.copy(alpha = 0.5f)
                     )
                 ),
-                shape = RoundedCornerShape(24.dp)
+                shape = RectangleShape
             )
             .padding(16.dp)
     ) {
-        Text(
-            text = message.text,
+        TypewriterText(
+            fullText = message.text,
             color = EntityColors.EchoText,
-            fontSize = 14.sp,
-            letterSpacing = 1.5.sp,
-            lineHeight = 22.sp,
-            fontStyle = FontStyle.Italic
+            style = TextStyle(
+                fontSize = 14.sp,
+                letterSpacing = 1.5.sp,
+                lineHeight = 22.sp,
+                fontStyle = FontStyle.Italic
+            ),
+            speed = speed
         )
     }
 }
 
 @Composable
-fun DevonMarginaliaBubble(message: ChatMessage, modifier: Modifier = Modifier) {
+fun DevonMarginaliaBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = Modifier
@@ -167,57 +171,66 @@ fun DevonMarginaliaBubble(message: ChatMessage, modifier: Modifier = Modifier) {
                 .background(Color(0xFF080808))
                 .padding(12.dp)
         ) {
-            Text(
-                text = message.text,
+            TypewriterText(
+                fullText = message.text,
                 color = Color(0xFF607D8B),
-                fontSize = 13.sp,
-                fontFamily = FontFamily.Monospace,
-                lineHeight = 20.sp
+                style = TextStyle(
+                    fontSize = 13.sp,
+                    fontFamily = FontFamily.Monospace,
+                    lineHeight = 20.sp
+                ),
+                speed = speed
             )
         }
     }
 }
 
 @Composable
-fun DevonKinesicBubble(message: ChatMessage, modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(EntityColors.DevonBackground)
-            .border(0.5.dp, EntityColors.DevonKinesicHighlight.copy(alpha = 0.5f), RoundedCornerShape(4.dp))
-            .padding(12.dp)
-    ) {
-        Text(
-            text = message.text,
-            color = EntityColors.DevonKinesicHighlight,
-            fontSize = 14.sp,
-            fontStyle = FontStyle.Italic,
-            lineHeight = 22.sp
-        )
-    }
-}
-
-@Composable
-fun DevonTunnelBubble(message: ChatMessage, modifier: Modifier = Modifier) {
+fun DevonKinesicBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .background(Color.Black)
-            .border(1.dp, Color(0x33FFFFFF))
-            .padding(16.dp)
+            .border(2.dp, EntityColors.DevonKinesicHighlight.copy(alpha = 0.8f), RectangleShape)
+            .padding(12.dp)
     ) {
-        Text(
-            text = message.text,
-            color = Color.White,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Medium,
-            lineHeight = 22.sp
+        TypewriterText(
+            fullText = message.text,
+            color = EntityColors.DevonKinesicHighlight,
+            style = TextStyle(
+                fontSize = 14.sp,
+                fontStyle = FontStyle.Italic,
+                lineHeight = 22.sp
+            ),
+            speed = speed
         )
     }
 }
 
 @Composable
-fun LegionBubble(message: ChatMessage, modifier: Modifier = Modifier) {
+fun DevonTunnelBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+            .border(2.dp, Color(0xFFFFFFFF), RectangleShape)
+            .padding(16.dp)
+    ) {
+        TypewriterText(
+            fullText = message.text,
+            color = Color.White,
+            style = TextStyle(
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Medium,
+                lineHeight = 22.sp
+            ),
+            speed = speed
+        )
+    }
+}
+
+@Composable
+fun LegionBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modifier) {
     val infiniteTransition = rememberInfiniteTransition(label = "legion_pulse")
     val borderProgress by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 1f,
@@ -229,7 +242,7 @@ fun LegionBubble(message: ChatMessage, modifier: Modifier = Modifier) {
         modifier = modifier
             .fillMaxWidth()
             .border(
-                width = 2.dp,
+                width = 3.dp,
                 brush = Brush.sweepGradient(
                     colors = listOf(
                         EntityColors.LegionBorderNanite,
@@ -238,7 +251,7 @@ fun LegionBubble(message: ChatMessage, modifier: Modifier = Modifier) {
                         EntityColors.LegionBorderNanite
                     )
                 ),
-                shape = RoundedCornerShape(4.dp)
+                shape = RectangleShape
             )
             .background(Color(0xFF030308))
             .padding(16.dp)
@@ -252,35 +265,34 @@ fun LegionBubble(message: ChatMessage, modifier: Modifier = Modifier) {
                 letterSpacing = 3.sp
             )
             Spacer(Modifier.height(8.dp))
-            Text(
-                text = message.text,
+            TypewriterText(
+                fullText = message.text,
                 color = Color.White,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.SemiBold,
-                lineHeight = 24.sp
+                style = TextStyle(
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    lineHeight = 24.sp
+                ),
+                speed = speed
             )
         }
     }
 }
 
 @Composable
-fun BaselineBubble(message: ChatMessage, modifier: Modifier = Modifier) {
+fun BaselineBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(
-                topStart = 2.dp,
-                topEnd = 12.dp,
-                bottomStart = 12.dp,
-                bottomEnd = 12.dp
-            ))
-            .background(MaterialTheme.colorScheme.surface)
+            .background(Color.Black)
+            .border(2.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), RectangleShape)
             .padding(12.dp)
     ) {
-        Text(
-            text = message.text,
+        TypewriterText(
+            fullText = message.text,
             style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.onBackground,
+            speed = speed
         )
     }
 }
@@ -315,16 +327,16 @@ fun AnnotatedChoiceCard(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .background(Color.Black)
                 .clickable { onSelected(choice.id) }
-                .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), RoundedCornerShape(4.dp))
+                .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
                 .padding(16.dp)
         ) {
             Text(
-                text = choice.text,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium
+                text = "> ${choice.text}",
+                color = MaterialTheme.colorScheme.primary,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold
             )
         }
     }
