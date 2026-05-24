@@ -13,9 +13,22 @@ data class NarrativeResponse(
 )
 
 @Serializable
+enum class VisualState {
+    BASELINE,
+    AURA_OVERRIDE,
+    ECHO_OVERRIDE,
+    DEVON_KINESIC,
+    DEVON_TUNNEL,
+    DEVON_MARGINALIA,
+    LEGION_GESTALT
+}
+
+@Serializable
 data class NarrativeUiData(
     val tone: String = "HUMOR",
     val location: String? = null,
+    @SerialName("visual_state")
+    val visualState: VisualState = VisualState.BASELINE,
     val choices: List<NarrativeChoice> = emptyList(),
     @SerialName("triad_vote")
     val triadVote: TriadVoteData? = null,
@@ -28,7 +41,11 @@ data class NarrativeChoice(
     val id: String,
     val text: String,
     @SerialName("risk_level")
-    val riskLevel: String = "LOW"
+    val riskLevel: String = "LOW",
+    @SerialName("aura_probability")
+    val auraProbability: String? = null,
+    @SerialName("devon_annotation")
+    val devonAnnotation: String? = null
 )
 
 @Serializable

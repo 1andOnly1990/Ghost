@@ -73,3 +73,27 @@ object SystemColors {
     val onBackground = Color(0xFF999999)
     val onSurface = Color(0xFF777777)
 }
+
+object EntityColors {
+    // AURA — clinical blue wireframe
+    val AuraBackground = Color(0xFF020D1A)
+    val AuraBorder = Color(0xFF1A6FA8)
+    val AuraPrimary = Color(0xFF4FC3F7)
+    val AuraDataText = Color(0xFF90CAF9)
+
+    // ECHO — quantum violet, fluid
+    val EchoBackground = Color(0xFF0D0014)
+    val EchoPrimary = Color(0xFFCE93D8)
+    val EchoAccent = Color(0xFF7B1FA2)
+    val EchoText = Color(0xFFE1BEE7)
+
+    // DEVON — desaturated, analog
+    val DevonBackground = Color(0xFF0A0A0A)
+    val DevonKinesicHighlight = Color(0xFFB0BEC5)
+    val DevonMarginalia = Color(0xFFF5F5DC)   // parchment tone for handwriting
+
+    // LEGION — combined storm
+    val LegionBorderNanite = Color(0xFF1A1A1A)
+    val LegionCoreBlue = Color(0xFF1565C0)
+    val LegionPulseViolet = Color(0xFF6A1B9A)
+}

@@ -168,11 +168,15 @@ fun TerminalScreen(
                     // Welcome message if empty
                     if (uiState.messages.isEmpty() && uiState.isInitialized) {
                         item {
-                            ChatBubble(
-                                text = "Terminal active. Waiting for input...\n\n> Type something to begin your story.",
+                            val welcomeMsg = com.ghost.legion.domain.model.ChatMessage(
+                                sessionId = uiState.sessionId,
                                 entity = NarrativeEntity.SYSTEM,
-                                isPlayerMessage = false,
-                                isLatest = true
+                                text = "Terminal active. Waiting for input...\n\n> Type something to begin your story.",
+                                isPlayerMessage = false
+                            )
+                            ChatBubble(
+                                message = welcomeMsg,
+                                visualState = com.ghost.legion.domain.model.VisualState.BASELINE
                             )
                         }
                     }
@@ -182,10 +186,8 @@ fun TerminalScreen(
                         key = { it.id }
                     ) { message ->
                         ChatBubble(
-                            text = message.text,
-                            entity = message.entity,
-                            isPlayerMessage = message.isPlayerMessage,
-                            isLatest = message == uiState.messages.lastOrNull()
+                            message = message,
+                            visualState = message.uiData?.visualState ?: com.ghost.legion.domain.model.VisualState.BASELINE
                         )
                     }
 

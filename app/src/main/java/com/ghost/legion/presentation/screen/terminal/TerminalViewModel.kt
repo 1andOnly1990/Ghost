@@ -12,6 +12,8 @@ import com.ghost.legion.domain.usecase.SendMessageUseCase
 import com.ghost.legion.domain.repository.NarrativeRepository
 import com.ghost.legion.domain.repository.GameStateRepository
 import com.ghost.legion.domain.repository.WorldRepository
+import com.ghost.legion.domain.model.VisualState
+import com.ghost.legion.presentation.util.TtsManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,6 +28,7 @@ data class TerminalUiState(
     val messages: List<ChatMessage> = emptyList(),
     val gameState: GameState = GameState(),
     val activeEntity: NarrativeEntity = NarrativeEntity.DEVON,
+    val currentVisualState: VisualState = VisualState.BASELINE,
     val currentUiData: NarrativeUiData? = null,
     val isLoading: Boolean = false,
     val isInitialized: Boolean = false,
@@ -40,7 +43,8 @@ class TerminalViewModel @Inject constructor(
     private val loadGameStateUseCase: LoadGameStateUseCase,
     private val narrativeRepository: NarrativeRepository,
     private val gameStateRepository: GameStateRepository,
-    private val worldRepository: WorldRepository
+    private val worldRepository: WorldRepository,
+    private val ttsManager: TtsManager
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TerminalUiState())
@@ -103,10 +107,13 @@ class TerminalViewModel @Inject constructor(
 
             try {
                 val response = sendMessageUseCase(_uiState.value.sessionId, text)
+                val entity = NarrativeEntity.fromString(response.entity)
+                ttsManager.speak(response.textResponse, entity)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        activeEntity = NarrativeEntity.fromString(response.entity),
+                        activeEntity = entity,
+                        currentVisualState = response.uiData?.visualState ?: VisualState.BASELINE,
                         currentUiData = response.uiData
                     )
                 }
@@ -126,10 +133,13 @@ class TerminalViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, currentUiData = null) }
             try {
                 val response = sendMessageUseCase(_uiState.value.sessionId, "[CHOICE: $choiceId]")
+                val entity = NarrativeEntity.fromString(response.entity)
+                ttsManager.speak(response.textResponse, entity)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        activeEntity = NarrativeEntity.fromString(response.entity),
+                        activeEntity = entity,
+                        currentVisualState = response.uiData?.visualState ?: VisualState.BASELINE,
                         currentUiData = response.uiData
                     )
                 }
@@ -144,10 +154,13 @@ class TerminalViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, currentUiData = null) }
             try {
                 val response = castTriadVoteUseCase(_uiState.value.sessionId, position)
+                val entity = NarrativeEntity.fromString(response.entity)
+                ttsManager.speak(response.textResponse, entity)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        activeEntity = NarrativeEntity.fromString(response.entity),
+                        activeEntity = entity,
+                        currentVisualState = response.uiData?.visualState ?: VisualState.BASELINE,
                         currentUiData = response.uiData
                     )
                 }
@@ -159,5 +172,10 @@ class TerminalViewModel @Inject constructor(
 
     fun clearError() {
         _uiState.update { it.copy(error = null) }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        ttsManager.shutdown()
     }
 }
