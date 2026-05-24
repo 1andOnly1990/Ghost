@@ -13,6 +13,7 @@ data class ChatLogEntity(
     val sessionId: String,
     val entity: String,
     val messageText: String,
+    val summary: String? = null,
     val uiDataJson: String? = null,
     val timestamp: Long = System.currentTimeMillis(),
     val isPlayerMessage: Boolean = false

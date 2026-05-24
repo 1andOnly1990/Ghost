@@ -7,7 +7,10 @@ import com.ghost.legion.domain.model.GameState
 import com.ghost.legion.domain.model.Faction
 import com.ghost.legion.domain.model.ChatMessage
 import com.ghost.legion.domain.model.NarrativeResponse
+import com.ghost.legion.domain.model.WorldSimulationPayload
+import com.ghost.legion.domain.model.WorldTickResponse
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -20,8 +23,10 @@ class GeminiClient @Inject constructor() {
     }
 
     private var model: GenerativeModel? = null
+    private var apiKey: String? = null
 
     fun initialize(apiKey: String) {
+        this.apiKey = apiKey
         model = GenerativeModel(
             modelName = "gemini-2.5-flash",
             apiKey = apiKey,
@@ -52,16 +57,22 @@ class GeminiClient @Inject constructor() {
         return json.decodeFromString<NarrativeResponse>(responseText)
     }
 
-    suspend fun generateFactionTick(
-        gameState: GameState,
-        factions: List<Faction>,
-        hoursSinceLastTick: Long
-    ): String {
-        val activeModel = model ?: throw IllegalStateException("GeminiClient not initialized.")
+    suspend fun runWorldSimulation(payload: WorldSimulationPayload): WorldTickResponse {
+        val key = apiKey ?: throw IllegalStateException("GeminiClient not initialized.")
+        val simModel = GenerativeModel(
+            modelName = "gemini-2.0-flash-lite",
+            apiKey = key,
+            generationConfig = GenerationConfig.builder().apply {
+                responseMimeType = "application/json"
+                temperature = 0.4f
+            }.build(),
+            systemInstruction = content { text(WORLD_SIMULATION_PROMPT) }
+        )
 
-        val prompt = buildFactionTickPrompt(gameState, factions, hoursSinceLastTick)
-        val response = activeModel.generateContent(prompt)
-        return response.text ?: "[]"
+        val promptText = json.encodeToString(payload)
+        val response = simModel.generateContent(promptText)
+        val responseText = response.text ?: "{}"
+        return json.decodeFromString<WorldTickResponse>(responseText)
     }
 
     private fun buildPrompt(
@@ -128,33 +139,6 @@ class GeminiClient @Inject constructor() {
         """.trimMargin()
     }
 
-    private fun buildFactionTickPrompt(
-        gameState: GameState,
-        factions: List<Faction>,
-        hoursSinceLastTick: Long
-    ): String {
-        val factionData = factions.joinToString("\n") { f ->
-            "- ${f.name} (${f.id}): influence=${f.influence}, hostility_to_player=${f.hostilityToPlayer}, current_agenda='${f.currentAgenda}'"
-        }
-
-        return """
-            |You are simulating background faction activity in Veridia City.
-            |Time elapsed since last tick: $hoursSinceLastTick hours.
-            |
-            |Player state: ${gameState.playerName} at ${gameState.currentLocation}, power level ${gameState.powerLevel}, morality ${gameState.moralityScore}
-            |
-            |Current factions:
-            |$factionData
-            |
-            |Generate updated agendas for each faction. Consider:
-            |- How would this faction react to the player's recent actions?
-            |- What independent schemes would they pursue?
-            |- Have any alliances shifted?
-            |
-            |Respond with a JSON array:
-            |[{"faction_id": "...", "new_agenda": "...", "influence_delta": 0, "hostility_delta": 0}]
-        """.trimMargin()
-    }
 
     companion object {
         private const val SYSTEM_PROMPT = """You are the Game Master of "Legion", a text-based cyberpunk narrative RPG set in Veridia City.
@@ -278,5 +262,27 @@ If the player pursues the package, they discover it is not data. It is Echo — 
 
 === INITIALIZATION ===
 On first session (no chat history): Begin in media res. Devon has just confirmed a successful offshore data transfer in a rain-soaked service alley. Aura is giving him the all-clear. Then the Chronos Dynamics 'Nomad' G-4 explodes at the end of the alley. Begin there. Do not explain the mechanics. Just start the story."""
+
+        private const val WORLD_SIMULATION_PROMPT = """You are the world simulation engine for "Legion", an ongoing cyberpunk narrative.
+Your job is to resolve time and physics while the player is offline or taking time to act.
+Do not write narrative text. Output strictly structured JSON representing state changes.
+
+ELAPSED TIME RULE: If elapsed time exceeds 24 hours, do not fully resolve active nodes.
+Advance faction agendas significantly but leave at least one active node in an intermediate state.
+The world moves fast when Devon is absent, but it doesn't end without him.
+
+Evaluate the `causalLog` and `elapsedHours` to determine:
+1. Did a faction achieve their current agenda?
+2. Did a player's inaction (or action) trigger a butterfly effect?
+3. What is the brief, punchy morning notification Devon wakes up to?
+
+Output Schema:
+{
+  "factionUpdates": [...],
+  "nodeResolutions": [...],
+  "morningBrief": "Aura's short, dry summary of what went wrong while Devon slept.",
+  "briefTitle": "e.g., 'Black Sun Escalation'",
+  "newOpportunities": ["new_node_id"]
+}"""
     }
 }

@@ -36,6 +36,10 @@ class NarrativeRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getRecentChatHistory(limit: Int): Flow<List<ChatLogEntity>> {
+        return chatLogDao.getGlobalRecentMessages(limit)
+    }
+
     override suspend fun sendMessage(sessionId: String, playerMessage: String): NarrativeResponse {
         // Save player message
         chatLogDao.insert(
@@ -43,6 +47,7 @@ class NarrativeRepositoryImpl @Inject constructor(
                 sessionId = sessionId,
                 entity = NarrativeEntity.DEVON.name,
                 messageText = playerMessage,
+                summary = playerMessage.take(150),
                 isPlayerMessage = true
             )
         )
@@ -75,11 +80,24 @@ class NarrativeRepositoryImpl @Inject constructor(
                 sessionId = sessionId,
                 entity = response.entity,
                 messageText = response.textResponse,
+                summary = response.textResponse.take(150),
                 uiDataJson = response.uiData?.let { json.encodeToString(it) }
             )
         )
 
         return response
+    }
+
+    override suspend fun injectSystemMessage(sessionId: String, text: String, entityName: String, visualState: com.ghost.legion.domain.model.VisualState) {
+        chatLogDao.insert(
+            ChatLogEntity(
+                sessionId = sessionId,
+                entity = entityName,
+                messageText = text,
+                summary = text.take(150),
+                uiDataJson = json.encodeToString(NarrativeUiData(visualState = visualState))
+            )
+        )
     }
 
     override suspend fun sendChoice(sessionId: String, choiceId: String): NarrativeResponse {

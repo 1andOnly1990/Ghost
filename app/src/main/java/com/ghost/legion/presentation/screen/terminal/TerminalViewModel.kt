@@ -81,6 +81,19 @@ class TerminalViewModel @Inject constructor(
     fun startSession() {
         viewModelScope.launch {
             val sessionId = narrativeRepository.startNewSession()
+            
+            val worldBoard = worldRepository.getWorldBoardOnce()
+            if (worldBoard.pendingMorningBrief.isNotBlank()) {
+                narrativeRepository.injectSystemMessage(
+                    sessionId = sessionId,
+                    text = worldBoard.pendingMorningBrief,
+                    entityName = NarrativeEntity.AURA.name,
+                    visualState = VisualState.AURA_OVERRIDE
+                )
+                ttsManager.speak(worldBoard.pendingMorningBrief, NarrativeEntity.AURA)
+                worldRepository.clearPendingMorningBrief()
+            }
+
             _uiState.update {
                 it.copy(sessionId = sessionId, isInitialized = true, messages = emptyList())
             }

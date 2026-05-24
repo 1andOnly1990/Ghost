@@ -11,4 +11,6 @@ interface NarrativeRepository {
     suspend fun sendTriadVote(sessionId: String, votedPosition: String): NarrativeResponse
     suspend fun startNewSession(): String
     suspend fun getMessageCount(sessionId: String): Int
+    fun getRecentChatHistory(limit: Int): Flow<List<com.ghost.legion.data.local.entity.ChatLogEntity>>
+    suspend fun injectSystemMessage(sessionId: String, text: String, entityName: String, visualState: com.ghost.legion.domain.model.VisualState)
 }

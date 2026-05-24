@@ -17,7 +17,7 @@ import com.ghost.legion.data.local.entity.WorldBoardEntity
         WorldBoardEntity::class,
         ChatLogEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)

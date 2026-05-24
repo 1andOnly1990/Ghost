@@ -11,6 +11,9 @@ interface ChatLogDao {
     @Query("SELECT * FROM chat_log WHERE sessionId = :sessionId ORDER BY timestamp DESC LIMIT :limit")
     fun getRecentMessages(sessionId: String, limit: Int = 50): Flow<List<ChatLogEntity>>
 
+    @Query("SELECT * FROM chat_log ORDER BY timestamp DESC LIMIT :limit")
+    fun getGlobalRecentMessages(limit: Int): Flow<List<ChatLogEntity>>
+
     @Query("SELECT * FROM chat_log WHERE sessionId = :sessionId ORDER BY timestamp ASC")
     fun getAllMessages(sessionId: String): Flow<List<ChatLogEntity>>
 
