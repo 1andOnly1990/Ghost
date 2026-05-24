@@ -164,7 +164,7 @@ fun SettingsScreen(
                                 readOnly = true,
                                 label = { Text("COLOR OVERRIDE") },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = themeMenuExpanded) },
-                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                modifier = Modifier.menuAnchor(androidx.compose.material3.MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = LegionColors.glitch2,
                                     unfocusedBorderColor = DevonColors.primaryDim,
@@ -211,7 +211,7 @@ fun SettingsScreen(
                                 readOnly = true,
                                 label = { Text("TEXT RENDERING SPEED") },
                                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = speedMenuExpanded) },
-                                modifier = Modifier.menuAnchor().fillMaxWidth(),
+                                modifier = Modifier.menuAnchor(androidx.compose.material3.MenuAnchorType.PrimaryNotEditable).fillMaxWidth(),
                                 colors = OutlinedTextFieldDefaults.colors(
                                     focusedBorderColor = LegionColors.glitch2,
                                     unfocusedBorderColor = DevonColors.primaryDim,

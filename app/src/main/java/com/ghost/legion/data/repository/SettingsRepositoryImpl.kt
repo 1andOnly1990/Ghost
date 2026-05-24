@@ -15,12 +15,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "legion_settings")
 
 @Singleton
 class SettingsRepositoryImpl @Inject constructor(
-    private val context: Context
+    @ApplicationContext private val context: Context
 ) : SettingsRepository {
 
     private object PreferencesKeys {
