@@ -25,11 +25,11 @@ enum class VisualState {
 
 @Serializable
 data class NarrativeUiData(
-    val tone: String = "HUMOR",
+    val tone: String? = "HUMOR",
     val location: String? = null,
     @SerialName("visual_state")
-    val visualState: VisualState = VisualState.BASELINE,
-    val choices: List<NarrativeChoice> = emptyList(),
+    val visualState: VisualState? = VisualState.BASELINE,
+    val choices: List<NarrativeChoice>? = null,
     @SerialName("triad_vote")
     val triadVote: TriadVoteData? = null,
     @SerialName("state_changes")
@@ -41,7 +41,7 @@ data class NarrativeChoice(
     val id: String,
     val text: String,
     @SerialName("risk_level")
-    val riskLevel: String = "LOW",
+    val riskLevel: String? = "LOW",
     @SerialName("aura_probability")
     val auraProbability: String? = null,
     @SerialName("devon_annotation")
