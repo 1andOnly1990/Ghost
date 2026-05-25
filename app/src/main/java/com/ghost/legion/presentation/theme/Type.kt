@@ -17,70 +17,70 @@ val RetroFont = FontFamily(
 
 val DevonTypography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 20.sp, lineHeight = 24.sp, letterSpacing = 0.5.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Normal,
+        fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 18.sp, lineHeight = 22.sp, letterSpacing = 0.3.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Normal,
+        fontSize = 14.sp, lineHeight = 18.sp, letterSpacing = 0.3.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Bold,
-        fontSize = 28.sp, lineHeight = 32.sp, letterSpacing = 1.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Black,
+        fontSize = 24.sp, lineHeight = 28.sp, letterSpacing = 1.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Bold,
-        fontSize = 24.sp, lineHeight = 28.sp, letterSpacing = 0.8.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Bold,
+        fontSize = 20.sp, lineHeight = 24.sp, letterSpacing = 0.8.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.5.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Bold,
+        fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 1.sp
     )
 )
 
 val AuraTypography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 20.sp, lineHeight = 24.sp, letterSpacing = 0.5.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Normal,
+        fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 18.sp, lineHeight = 22.sp, letterSpacing = 0.3.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Normal,
+        fontSize = 14.sp, lineHeight = 18.sp, letterSpacing = 0.3.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Bold,
-        fontSize = 28.sp, lineHeight = 32.sp, letterSpacing = 1.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Black,
+        fontSize = 24.sp, lineHeight = 28.sp, letterSpacing = 1.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Bold,
-        fontSize = 24.sp, lineHeight = 28.sp, letterSpacing = 0.8.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Bold,
+        fontSize = 20.sp, lineHeight = 24.sp, letterSpacing = 0.8.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.5.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Bold,
+        fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 1.sp
     )
 )
 
 val EchoTypography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 20.sp, lineHeight = 24.sp, letterSpacing = 0.5.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Normal,
+        fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 18.sp, lineHeight = 22.sp, letterSpacing = 0.3.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Normal,
+        fontSize = 14.sp, lineHeight = 18.sp, letterSpacing = 0.3.sp
     ),
     titleLarge = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Bold,
-        fontSize = 28.sp, lineHeight = 32.sp, letterSpacing = 1.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Black,
+        fontSize = 24.sp, lineHeight = 28.sp, letterSpacing = 1.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Bold,
-        fontSize = 24.sp, lineHeight = 28.sp, letterSpacing = 0.8.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Bold,
+        fontSize = 20.sp, lineHeight = 24.sp, letterSpacing = 0.8.sp
     ),
     labelSmall = TextStyle(
-        fontFamily = RetroFont, fontWeight = FontWeight.Normal,
-        fontSize = 16.sp, lineHeight = 20.sp, letterSpacing = 0.5.sp
+        fontFamily = CleanFont, fontWeight = FontWeight.Bold,
+        fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 1.sp
     )
 )
 

@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -28,6 +28,20 @@ import com.ghost.legion.domain.model.TextSpeed
 import com.ghost.legion.presentation.theme.EntityColors
 import com.ghost.legion.presentation.theme.EntityFonts
 
+private val NervShape = CutCornerShape(
+    topStart = 8.dp,
+    topEnd = 0.dp,
+    bottomEnd = 8.dp,
+    bottomStart = 0.dp
+)
+
+private val NervShapeAlt = CutCornerShape(
+    topStart = 0.dp,
+    topEnd = 8.dp,
+    bottomEnd = 0.dp,
+    bottomStart = 8.dp
+)
+
 @Composable
 fun ChatBubble(
     message: ChatMessage,
@@ -43,16 +57,40 @@ fun ChatBubble(
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.85f)
+                    .clip(NervShapeAlt)
                     .background(Color.Black)
-                    .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
+                    .border(1.dp, MaterialTheme.colorScheme.primary, NervShapeAlt)
                     .padding(12.dp)
             ) {
-                TypewriterText(
-                    fullText = message.text,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary,
-                    speed = speed
-                )
+                Column {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = "[TX.UPLINK]",
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.7f),
+                            fontSize = 10.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.sp
+                        )
+                        Text(
+                            text = "OP_DEVON",
+                            color = MaterialTheme.colorScheme.primary,
+                            fontSize = 10.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            fontWeight = FontWeight.Black
+                        )
+                    }
+                    Spacer(Modifier.height(6.dp))
+                    TypewriterText(
+                        fullText = message.text,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                        speed = speed
+                    )
+                }
             }
         }
         return
@@ -74,10 +112,11 @@ fun AuraBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modi
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .clip(NervShape)
             .border(
                 width = 2.dp,
                 color = EntityColors.AuraBorder,
-                shape = RectangleShape
+                shape = NervShape
             )
             .background(Color.Black)
             .padding(12.dp)
@@ -85,32 +124,42 @@ fun AuraBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modi
         Column {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "AURA // TACTICAL",
+                    text = "MAGI // CASPER-01",
                     color = EntityColors.AuraPrimary,
-                    fontSize = 9.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontSize = 11.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Black,
                     letterSpacing = 2.sp
                 )
-                Text(
-                    text = "■ ACTIVE",
-                    color = EntityColors.AuraPrimary,
-                    fontSize = 9.sp,
-                    fontFamily = FontFamily.Monospace
-                )
+                Box(
+                    modifier = Modifier
+                        .background(EntityColors.AuraPrimary)
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = "ACTIVE",
+                        color = Color.Black,
+                        fontSize = 9.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
             Spacer(Modifier.height(8.dp))
-            HorizontalDivider(color = EntityColors.AuraBorder, thickness = 0.5.dp)
+            HorizontalDivider(color = EntityColors.AuraBorder, thickness = 1.dp)
             Spacer(Modifier.height(8.dp))
             TypewriterText(
                 fullText = message.text,
                 color = EntityColors.AuraDataText,
                 style = TextStyle(
-                    fontSize = 13.sp,
-                    fontFamily = FontFamily.Monospace,
-                    lineHeight = 20.sp
+                    fontSize = 14.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    lineHeight = 20.sp,
+                    fontWeight = FontWeight.Medium
                 ),
                 speed = speed
             )
@@ -122,10 +171,10 @@ fun AuraBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modi
 fun EchoBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modifier) {
     val infiniteTransition = rememberInfiniteTransition(label = "echo_pulse")
     val alpha by infiniteTransition.animateFloat(
-        initialValue = 0.6f,
+        initialValue = 0.4f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(
-            animation = tween(2000, easing = FastOutSlowInEasing),
+            animation = tween(1500, easing = FastOutLinearInEasing),
             repeatMode = RepeatMode.Reverse
         ),
         label = "echo_alpha"
@@ -134,30 +183,42 @@ fun EchoBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Modi
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .clip(NervShape)
             .background(Color.Black)
             .border(
-                width = 2.dp,
+                width = 1.dp,
                 brush = Brush.linearGradient(
                     colors = listOf(
                         EntityColors.EchoPrimary.copy(alpha = alpha),
                         EntityColors.EchoAccent.copy(alpha = 0.5f)
                     )
                 ),
-                shape = RectangleShape
+                shape = NervShape
             )
             .padding(16.dp)
     ) {
-        TypewriterText(
-            fullText = message.text,
-            color = EntityColors.EchoText,
-            style = TextStyle(
-                fontSize = 14.sp,
-                letterSpacing = 1.5.sp,
-                lineHeight = 22.sp,
-                fontStyle = FontStyle.Italic
-            ),
-            speed = speed
-        )
+        Column {
+            Text(
+                text = "SYNTH // ECHO",
+                color = EntityColors.EchoPrimary,
+                fontSize = 10.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 2.sp
+            )
+            Spacer(Modifier.height(6.dp))
+            TypewriterText(
+                fullText = message.text,
+                color = EntityColors.EchoText,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    letterSpacing = 0.5.sp,
+                    lineHeight = 22.sp,
+                    fontStyle = FontStyle.Italic
+                ),
+                speed = speed
+            )
+        }
     }
 }
 
@@ -167,16 +228,18 @@ fun DevonMarginaliaBubble(message: ChatMessage, speed: TextSpeed, modifier: Modi
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF080808))
+                .clip(CutCornerShape(bottomEnd = 16.dp))
+                .background(Color(0xFF0A0A0A))
+                .border(1.dp, EntityColors.DevonMarginalia.copy(alpha = 0.3f), CutCornerShape(bottomEnd = 16.dp))
                 .padding(12.dp)
         ) {
             TypewriterText(
                 fullText = message.text,
-                color = Color(0xFF607D8B),
+                color = EntityColors.DevonMarginalia,
                 style = TextStyle(
-                    fontSize = 13.sp,
-                    fontFamily = FontFamily.Monospace,
-                    lineHeight = 20.sp
+                    fontSize = 18.sp,
+                    fontFamily = EntityFonts.devonHandwriting,
+                    lineHeight = 22.sp
                 ),
                 speed = speed
             )
@@ -189,20 +252,32 @@ fun DevonKinesicBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifie
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .clip(NervShape)
             .background(Color.Black)
-            .border(2.dp, EntityColors.DevonKinesicHighlight.copy(alpha = 0.8f), RectangleShape)
+            .border(1.dp, EntityColors.DevonKinesicHighlight.copy(alpha = 0.8f), NervShape)
             .padding(12.dp)
     ) {
-        TypewriterText(
-            fullText = message.text,
-            color = EntityColors.DevonKinesicHighlight,
-            style = TextStyle(
-                fontSize = 14.sp,
-                fontStyle = FontStyle.Italic,
-                lineHeight = 22.sp
-            ),
-            speed = speed
-        )
+        Column {
+            Text(
+                text = "[KINESIC.SCAN]",
+                color = EntityColors.DevonKinesicHighlight.copy(alpha = 0.7f),
+                fontSize = 10.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+            Spacer(Modifier.height(6.dp))
+            TypewriterText(
+                fullText = message.text,
+                color = EntityColors.DevonKinesicHighlight,
+                style = TextStyle(
+                    fontSize = 14.sp,
+                    fontStyle = FontStyle.Italic,
+                    lineHeight = 22.sp
+                ),
+                speed = speed
+            )
+        }
     }
 }
 
@@ -211,20 +286,32 @@ fun DevonTunnelBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .clip(NervShape)
             .background(Color.Black)
-            .border(2.dp, Color(0xFFFFFFFF), RectangleShape)
+            .border(2.dp, Color(0xFFFFFFFF), NervShape)
             .padding(16.dp)
     ) {
-        TypewriterText(
-            fullText = message.text,
-            color = Color.White,
-            style = TextStyle(
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium,
-                lineHeight = 22.sp
-            ),
-            speed = speed
-        )
+        Column {
+            Text(
+                text = "!!! TUNNEL_VISION !!!",
+                color = Color.White,
+                fontSize = 12.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Black,
+                letterSpacing = 2.sp
+            )
+            Spacer(Modifier.height(6.dp))
+            TypewriterText(
+                fullText = message.text,
+                color = Color.White,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 24.sp
+                ),
+                speed = speed
+            )
+        }
     }
 }
 
@@ -233,13 +320,14 @@ fun LegionBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Mo
     val infiniteTransition = rememberInfiniteTransition(label = "legion_pulse")
     val borderProgress by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(3000), RepeatMode.Restart),
+        animationSpec = infiniteRepeatable(tween(2000), RepeatMode.Restart),
         label = "legion_border"
     )
 
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .clip(NervShape)
             .border(
                 width = 3.dp,
                 brush = Brush.sweepGradient(
@@ -250,19 +338,39 @@ fun LegionBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = Mo
                         EntityColors.LegionBorderNanite
                     )
                 ),
-                shape = RectangleShape
+                shape = NervShape
             )
-            .background(Color(0xFF030308))
+            .background(Color.Black)
             .padding(16.dp)
     ) {
         Column {
-            Text(
-                text = "// LEGION // ENTANGLEMENT ACTIVE",
-                color = EntityColors.LegionCoreBlue,
-                fontSize = 8.sp,
-                fontFamily = FontFamily.Monospace,
-                letterSpacing = 3.sp
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "SYS // OVERRIDE",
+                    color = EntityColors.LegionPulseViolet,
+                    fontSize = 12.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 3.sp
+                )
+                Box(
+                    modifier = Modifier
+                        .background(EntityColors.LegionBorderNanite)
+                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = "CRITICAL",
+                        color = Color.Black,
+                        fontSize = 10.sp,
+                        fontFamily = FontFamily.SansSerif,
+                        fontWeight = FontWeight.Black
+                    )
+                }
+            }
             Spacer(Modifier.height(8.dp))
             TypewriterText(
                 fullText = message.text,
@@ -283,16 +391,28 @@ fun BaselineBubble(message: ChatMessage, speed: TextSpeed, modifier: Modifier = 
     Box(
         modifier = modifier
             .fillMaxWidth()
+            .clip(NervShape)
             .background(Color.Black)
-            .border(2.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), RectangleShape)
+            .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f), NervShape)
             .padding(12.dp)
     ) {
-        TypewriterText(
-            fullText = message.text,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-            speed = speed
-        )
+        Column {
+            Text(
+                text = "[RX.DATA]",
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                fontSize = 9.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            )
+            Spacer(Modifier.height(4.dp))
+            TypewriterText(
+                fullText = message.text,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                speed = speed
+            )
+        }
     }
 }
 
@@ -302,41 +422,61 @@ fun AnnotatedChoiceCard(
     onSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier.padding(vertical = 4.dp)) {
+    Column(modifier = modifier.padding(vertical = 6.dp)) {
         if (choice.auraProbability != null) {
             Text(
-                text = "AURA: ${choice.auraProbability} probability",
+                text = "MAGI_PROBABILITY: ${choice.auraProbability}",
                 color = EntityColors.AuraPrimary,
-                fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
-                modifier = Modifier.padding(start = 8.dp)
+                fontSize = 11.sp,
+                fontFamily = FontFamily.SansSerif,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp, bottom = 4.dp)
             )
         }
         if (choice.devonAnnotation != null) {
             Text(
                 text = "↳ ${choice.devonAnnotation}",
                 color = EntityColors.DevonMarginalia,
-                fontSize = 16.sp,
+                fontSize = 18.sp,
                 fontFamily = EntityFonts.devonHandwriting,
                 modifier = Modifier
-                    .padding(start = 12.dp, top = 2.dp)
-                    .rotate(-1.5f)
+                    .padding(start = 24.dp, bottom = 4.dp)
+                    .rotate(-2f)
             )
         }
         Box(
             modifier = Modifier
                 .fillMaxWidth()
+                .clip(CutCornerShape(topStart = 12.dp, bottomEnd = 12.dp))
                 .background(Color.Black)
                 .clickable { onSelected(choice.id) }
-                .border(2.dp, MaterialTheme.colorScheme.primary, RectangleShape)
+                .border(2.dp, MaterialTheme.colorScheme.primary, CutCornerShape(topStart = 12.dp, bottomEnd = 12.dp))
                 .padding(16.dp)
         ) {
-            Text(
-                text = "> ${choice.text}",
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = choice.text,
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Black
+                )
+                Box(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.primary)
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = "EXECUTE",
+                        color = Color.Black,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                }
+            }
         }
     }
 }
