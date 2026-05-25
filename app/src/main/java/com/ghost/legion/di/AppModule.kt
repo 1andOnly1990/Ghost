@@ -6,7 +6,10 @@ import com.ghost.legion.data.local.LegionDatabase
 import com.ghost.legion.data.local.dao.ActiveStateDao
 import com.ghost.legion.data.local.dao.ChatLogDao
 import com.ghost.legion.data.local.dao.WorldBoardDao
+import com.ghost.legion.domain.repository.GenerativeClient
+import com.ghost.legion.data.remote.OllamaClient
 import com.ghost.legion.data.remote.GeminiClient
+import com.ghost.legion.data.local.MockGenerativeClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,7 +50,9 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideGeminiClient(): GeminiClient {
-        return GeminiClient()
+    fun provideGenerativeClient(
+        ollamaClient: OllamaClient
+    ): GenerativeClient {
+        return ollamaClient // You can swap this to MockGenerativeClient() or GeminiClient()
     }
 }

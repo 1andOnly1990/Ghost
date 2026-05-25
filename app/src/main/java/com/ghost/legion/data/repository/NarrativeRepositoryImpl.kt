@@ -4,7 +4,7 @@ import com.ghost.legion.data.local.dao.ChatLogDao
 import com.ghost.legion.data.local.dao.ActiveStateDao
 import com.ghost.legion.data.local.dao.WorldBoardDao
 import com.ghost.legion.data.local.entity.ChatLogEntity
-import com.ghost.legion.data.remote.GeminiClient
+import com.ghost.legion.domain.repository.GenerativeClient
 import com.ghost.legion.domain.model.ChatMessage
 import com.ghost.legion.domain.model.Faction
 import com.ghost.legion.domain.model.NarrativeEntity
@@ -25,7 +25,7 @@ class NarrativeRepositoryImpl @Inject constructor(
     private val chatLogDao: ChatLogDao,
     private val activeStateDao: ActiveStateDao,
     private val worldBoardDao: WorldBoardDao,
-    private val geminiClient: GeminiClient
+    private val generativeClient: GenerativeClient
 ) : NarrativeRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
@@ -72,7 +72,7 @@ class NarrativeRepositoryImpl @Inject constructor(
         val chatHistory = chatLogDao.getAllMessages(sessionId).first().map { it.toDomain() }
 
         // Generate response
-        val response = geminiClient.generateNarrative(gameState, factions, chatHistory, playerMessage)
+        val response = generativeClient.generateNarrative(gameState, factions, chatHistory, playerMessage)
 
         // Save AI response
         chatLogDao.insert(

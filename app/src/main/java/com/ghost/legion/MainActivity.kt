@@ -17,7 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.navigation.compose.rememberNavController
-import com.ghost.legion.data.remote.GeminiClient
+import com.ghost.legion.domain.repository.GenerativeClient
 import com.ghost.legion.presentation.navigation.LegionNavGraph
 import com.ghost.legion.presentation.navigation.LegionRoute
 import com.ghost.legion.presentation.theme.LegionTheme
@@ -33,7 +33,7 @@ import com.ghost.legion.domain.repository.SettingsRepository
 class MainActivity : ComponentActivity() {
 
     @Inject
-    lateinit var geminiClient: GeminiClient
+    lateinit var generativeClient: GenerativeClient
 
     @Inject
     lateinit var settingsRepository: SettingsRepository
@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            var apiKey by remember { mutableStateOf("") }
+            val isInitialized = remember { mutableStateOf(generativeClient.isInitialized()) }
             val navController = rememberNavController()
             val scope = rememberCoroutineScope()
 
@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(Unit) {
                 settingsRepository.settings.collect { settings ->
                     if (settings.apiKey.isNotBlank()) {
-                        geminiClient.initialize(settings.apiKey)
+                        generativeClient.initialize(settings.apiKey)
                     }
                 }
             }

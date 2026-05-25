@@ -5,7 +5,7 @@ import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.ghost.legion.data.local.dao.ActiveStateDao
-import com.ghost.legion.data.remote.GeminiClient
+import com.ghost.legion.domain.repository.GenerativeClient
 import com.ghost.legion.domain.model.CausalEvent
 import com.ghost.legion.domain.model.CausalTrigger
 import com.ghost.legion.domain.model.GameStateContext
@@ -25,7 +25,7 @@ class FactionTickWorker @AssistedInject constructor(
     private val worldRepository: WorldRepository,
     private val activeStateDao: ActiveStateDao,
     private val narrativeRepository: NarrativeRepository,
-    private val geminiClient: GeminiClient
+    private val generativeClient: GenerativeClient
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result {
@@ -66,7 +66,7 @@ class FactionTickWorker @AssistedInject constructor(
             )
 
             // 3. Call Simulation Engine
-            val response = geminiClient.runWorldSimulation(payload)
+            val response = generativeClient.runWorldSimulation(payload)
 
             // 4. Apply Updates
             worldRepository.applyTickResponse(response)
