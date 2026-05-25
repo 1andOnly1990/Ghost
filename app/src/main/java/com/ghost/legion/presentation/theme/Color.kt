@@ -85,6 +85,7 @@ object SystemColors {
     val onSurface = Color(0xFF777777)
 }
 
+object EntityColors {
     // AURA — MAGI terminal
     val AuraBackground = Color(0xFF000000)
     val AuraBorder = Color(0xFF00FFFF)
